@@ -1,4 +1,4 @@
-package data.models;
+package main.java.com.library.data.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -25,15 +25,7 @@ public class BaseEntity {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-
     @LastModifiedDate
     @Column(updatable = false)
     private LocalDateTime updatedAt;
-
-    @LastModifiedBy
-    @Column(updatable = false)
-    private String updatedBy;
 }

@@ -1,4 +1,4 @@
-package data.models;
+package main.java.com.library.data.models;
 
 
 import jakarta.persistence.*;
