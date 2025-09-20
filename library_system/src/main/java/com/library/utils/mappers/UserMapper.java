@@ -6,7 +6,6 @@ import main.java.com.library.dto.User.UserDto;
 import main.java.com.library.dto.User.request.RegisterRequestDto;
 import org.mapstruct.Mapper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Mapper(componentModel = "spring")
 public class UserMapper {
