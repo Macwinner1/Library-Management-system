@@ -1,15 +1,20 @@
 package main.java.com.library.services.impl;
 
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import main.java.com.library.data.models.Book;
+import main.java.com.library.data.models.User;
 import main.java.com.library.data.repository.BookRepository;
+import main.java.com.library.data.repository.UserRepository;
 import main.java.com.library.dto.book.BookCreateOrUpdateDto;
 import main.java.com.library.dto.book.BookDto;
+import main.java.com.library.dto.book.BorrowBookDto;
 import main.java.com.library.exception.BookAlreadyExistsException;
 import main.java.com.library.exception.ResourceNotFoundException;
 
 import main.java.com.library.services.BookServices;
+import main.java.com.library.services.UserServices;
 import main.java.com.library.utils.mappers.BookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,12 @@ public class IBookService implements BookServices {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private UserServices userServices;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<BookDto> fetchAllBooks() {
@@ -113,4 +124,23 @@ public class IBookService implements BookServices {
         Optional<Book> optionalBook = bookRepository.findBookByBookTitleAndAuthor(title, author);
         return optionalBook.isPresent();
     }
+
+    @Override
+    public Book borrowBook(BorrowBookDto borrowBookDto, HttpSession session) {
+        User user = userServices.getAuthenticatedUser(session);
+        if (user.getBooks().size() >= 5) {
+            throw new IllegalStateException("User has reached the borrowing limit of 5 books.");
+        }
+
+        Book book = bookRepository.findById(borrowBookDto.getBookId())
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found", borrowBookDto.getBookTitle(), borrowBookDto.getAuthor()));
+
+        Book books = new Book();
+        books.setUser(user);
+        user.getBooks().add(book);
+        userRepository.save(user);
+
+        return BookMapper.mapToBookEntity(borrowBookDto, book);
+    }
+
 }
