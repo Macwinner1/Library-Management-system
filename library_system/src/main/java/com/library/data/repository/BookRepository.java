@@ -2,6 +2,7 @@ package main.java.com.library.data.repository;
 
 
 import main.java.com.library.data.models.Book;
+import main.java.com.library.dto.book.BookDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +20,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "LOWER(b.author) LIKE LOWER(CONCAT('%', :text, '%')) OR " +
             "STR(b.addedOn) LIKE CONCAT('%', :text, '%')")
     List<Book> searchBooks(@Param("text") String text);
+
 
 }
